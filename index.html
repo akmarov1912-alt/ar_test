@@ -8,14 +8,15 @@
         body { margin: 0; overflow: hidden; }
         #playBtn {
             position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            z-index: 999; padding: 15px; background: #00f3ff; border: none; display: none;
+            z-index: 999; padding: 15px 25px; background: #00f3ff; border: none; 
+            border-radius: 10px; font-weight: bold; display: none;
         }
     </style>
 </head>
 <body>
-    <button id="playBtn">ВКЛЮЧИТЬ ЗВУК И ВИДЕО</button>
+    <button id="playBtn">ВКЛЮЧИТЬ ЗВУК</button>
 
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: no;" 
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: yes;" 
              embedded color-space="sRGB" renderer="colorManagement: true, alpha: true" 
              vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
         
@@ -26,28 +27,27 @@
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <a-entity mindar-image-target="targetIndex: 0">
-            <a-video src="#arVideo" width="1" height="1" position="0 0 0" material="shader: flat; transparent: true"></a-video>
+            <a-video src="#arVideo" width="1" height="1.77" position="0 0 0"></a-video>
         </a-entity>
     </a-scene>
 
     <script>
         const video = document.querySelector('#arVideo');
         const btn = document.querySelector('#playBtn');
-        
-        // Жесткая привязка событий
-        document.querySelector('a-scene').addEventListener('targetFound', () => {
+        const sceneEl = document.querySelector('a-scene');
+
+        sceneEl.addEventListener('targetFound', () => {
+            video.play();
             btn.style.display = 'block';
-            video.play().catch(e => console.log("Ждем клика"));
         });
 
-        document.querySelector('a-scene').addEventListener('targetLost', () => {
-            btn.style.display = 'none';
+        sceneEl.addEventListener('targetLost', () => {
             video.pause();
+            btn.style.display = 'none';
         });
 
         btn.addEventListener('click', () => {
             video.muted = false;
-            video.play();
             btn.style.display = 'none';
         });
     </script>
