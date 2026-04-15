@@ -1,25 +1,55 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; background-color: black; }
-      /* Кнопка включения звука */
-      #ui { 
-        position: absolute; z-index: 1000; bottom: 30px; left: 50%; 
-        transform: translateX(-50%); display: none; 
-      }
-      button { 
-        padding: 12px 24px; background: #00f3ff; color: #000; 
-        border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
-        box-shadow: 0 0 15px #00f3ff;
-      }
+        body { margin: 0; overflow: hidden; }
+        #playBtn {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 999; padding: 15px; background: #00f3ff; border: none; display: none;
+        }
     </style>
-  </head>
-  <body>
-    <div id="ui"><button id="playBtn">ВКЛЮЧИТЬ ЗВУК</button></div>
+</head>
+<body>
+    <button id="playBtn">ВКЛЮЧИТЬ ЗВУК И ВИДЕО</button>
 
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: no;" 
+             embedded color-space="sRGB" renderer="colorManagement: true, alpha: true" 
+             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        
+        <a-assets>
+            <video id="arVideo" src="video.mp4" preload="auto" loop crossorigin="anonymous" playsinline muted></video>
+        </a-assets>
 
-    
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-video src="#arVideo" width="1" height="1" position="0 0 0" material="shader: flat; transparent: true"></a-video>
+        </a-entity>
+    </a-scene>
+
+    <script>
+        const video = document.querySelector('#arVideo');
+        const btn = document.querySelector('#playBtn');
+        
+        // Жесткая привязка событий
+        document.querySelector('a-scene').addEventListener('targetFound', () => {
+            btn.style.display = 'block';
+            video.play().catch(e => console.log("Ждем клика"));
+        });
+
+        document.querySelector('a-scene').addEventListener('targetLost', () => {
+            btn.style.display = 'none';
+            video.pause();
+        });
+
+        btn.addEventListener('click', () => {
+            video.muted = false;
+            video.play();
+            btn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
