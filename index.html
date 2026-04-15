@@ -5,43 +5,21 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; }
-      #ui { position: absolute; z-index: 100; bottom: 20px; left: 50%; transform: translateX(-50%); }
-      button { padding: 10px 20px; background: #00f3ff; border: none; border-radius: 5px; cursor: pointer; }
+      body { margin: 0; overflow: hidden; background-color: black; }
+      /* Кнопка включения звука */
+      #ui { 
+        position: absolute; z-index: 1000; bottom: 30px; left: 50%; 
+        transform: translateX(-50%); display: none; 
+      }
+      button { 
+        padding: 12px 24px; background: #00f3ff; color: #000; 
+        border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+        box-shadow: 0 0 15px #00f3ff;
+      }
     </style>
   </head>
   <body>
-    <div id="ui" class="hidden"><button id="playBtn">Включить звук</button></div>
+    <div id="ui"><button id="playBtn">ВКЛЮЧИТЬ ЗВУК</button></div>
 
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: yes;" 
-             color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
-             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      
-      <a-assets>
-        <video id="arVideo" src="./video.mp4" preload="auto" loop="true" crossorigin="anonymous" playsinline muted></video>
-      </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-video src="#arVideo" width="1" height="0.7" position="0 0 0"></a-video>
-      </a-entity>
-    </a-scene>
-
-    <script>
-      const video = document.querySelector('#arVideo');
-      const btn = document.querySelector('#playBtn');
-      const ui = document.querySelector('#ui');
-
-      document.querySelector('a-scene').addEventListener('targetFound', () => {
-        video.play();
-        ui.classList.remove('hidden'); // Показываем кнопку включения звука
-      });
-
-      btn.addEventListener('click', () => {
-        video.muted = false; // Включаем звук по клику
-        ui.classList.add('hidden');
-      });
-    </script>
-  </body>
-</html>
+    
