@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+      body { margin: 0; overflow: hidden; }
+      /* Стили для лоадера, пока грузится AR */
+      #scanning-overlay {
+        display: flex; align-items: center; justify-content: center;
+        position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+        background: rgba(0,0,0,0.5); color: white; z-index: 2;
+      }
+      .hidden { display: none !important; }
+    </style>
+  </head>
+
+  <body>
+    <div id="scanning-overlay">Подождите, камера запускается...</div>
+
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind; uiScanning: #scanning-overlay;" 
+             color-space="sRGB" 
+             renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" 
+             device-orientation-permission-ui="enabled: false">
+      
+      <a-assets>
+        <video id="arVideo" src="./video.mp4" preload="auto" loop="true" crossorigin="anonymous" playsinline></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-video src="#arVideo" width="1" height="0.7" position="0 0 0" rotation="0 0 0"></a-video>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Скрипт для автозапуска видео при обнаружении маркера
+      const video = document.querySelector('#arVideo');
+      const sceneEl = document.querySelector('a-scene');
+      
+      sceneEl.addEventListener('targetFound', event => {
+        console.log("Маркер найден!");
+        video.play();
+      });
+
+      sceneEl.addEventListener('targetLost', event => {
+        console.log("Маркер потерян.");
+        video.pause();
+      });
+    </script>
+  </body>
+</html>
